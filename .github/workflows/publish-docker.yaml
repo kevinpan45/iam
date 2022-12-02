@@ -1,0 +1,46 @@
+name: Build and Publish Docker Image
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+# Set new date env
+env:
+  version: "testing"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1.1.0
+        with:
+          # Optionally strip `v` prefix
+          strip_v: true
+        continue-on-error: true
+      - name: Set tag env
+        if: steps.tag.outcome == 'success'
+        run: echo "version=${{ steps.tag.outputs.tag }}" >> $GITHUB_ENV
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+      - name: Maven Build
+        run: mvn clean package -DskipTests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push to Docker Hub
+        uses: elgohr/Publish-Docker-Github-Action@v4
+        with:
+          name: kevinpan45/iam:${{ env.version }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          context: .
