@@ -1,0 +1,36 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/alpine
+{
+	"name": "kp45-devbox",
+	"image": "ghcr.io/kevinpan45/dev-box:latest",
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "git config --global core.autocrlf true",
+	// Configure tool-specific properties.
+	// "customizations": {},
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	"remoteUser": "root",
+	// Mount .m2 folder to speed up maven builds
+	"mounts": [
+		{
+			"source": "C:\\Users\\KP45\\.m2",
+			"target": "/root/.m2",
+			"type": "bind"
+		}
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscjava.vscode-java-pack",
+				"ms-azuretools.vscode-docker",
+				"GitHub.copilot",
+				"GitHub.vscode-pull-request-github",
+				"Pivotal.vscode-boot-dev-pack",
+				"vscjava.vscode-lombok"
+			]
+		}
+	}
+}
